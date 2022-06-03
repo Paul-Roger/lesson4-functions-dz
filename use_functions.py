@@ -33,20 +33,78 @@
 
 Для реализации основного меню можно использовать пример ниже или написать свой
 """
+account = 0.0
+goods_list = list()
+
+def str_to_num(line):
+    #конвертирует строку в число
+    line = line.strip()
+    # если в строке только цифры
+    if line.isdigit():
+        return int(line)
+    # если строка содержит точку или запятую
+    elif (line.count('.')==1) ^ (line.count(',')==1):
+        # если из строки убрать точку или запятую
+        # и в строке останутся только цифры
+        if any(line.replace(x, '').isdigit() for x in ['.', ',']):
+            return float(line.replace(',', '.'))
+    else:
+        # ошибка
+        print('Это не число!\n')
+        return 0
+
+
+def add_to_list(item, price):
+    goods_list.append([item, price])
+
+
+def fill_acc(account):
+    inp_str = input("Сумма пополнения: ")
+    inp_num = str_to_num(inp_str)
+    if inp_num > 0:
+        print("успешно пополнили на " + str(inp_num))
+        return account + inp_num
+    else: return account
+
+def buy(account):
+    inp_str = input("Сумма покупки: ")
+    inp_num = str_to_num(inp_str)
+    if inp_num > 0:
+        if inp_num <= account:
+            inp_str = ''
+            inp_str = input("Название товара: ")
+            while (inp_str.strip() ==''):
+                inp_str = input("Введите не пустое Название товара: ")
+            account -=inp_num
+            print("успешно купили " + inp_str + " за " + str(inp_num))
+            add_to_list(inp_str, inp_num)
+        else:
+            print("Недостаточно средств для покупки!")
+    else:
+        print("Неверная сумма!")
+    return account
+
+def show_list():
+    print("История покупок:")
+    for i, p in goods_list:
+        print(i, p)
 
 while True:
+    print('\n')
     print('1. пополнение счета')
     print('2. покупка')
     print('3. история покупок')
-    print('4. выход')
+    print('4. выход\n')
 
-    choice = input('Выберите пункт меню')
+    choice = input('Выберите пункт меню: ')
     if choice == '1':
-        pass
+        account = fill_acc(account)
+        print("текущий баланс " + str(account))
     elif choice == '2':
-        pass
+        account = buy(account)
+        print("текущий баланс " + str(account))
     elif choice == '3':
-        pass
+        show_list()
     elif choice == '4':
         break
     else:
